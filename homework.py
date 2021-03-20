@@ -1,6 +1,7 @@
 import os
 import time
 
+import logging
 import requests
 import telegram
 from dotenv import load_dotenv
@@ -18,7 +19,8 @@ def parse_homework_status(homework):
     if homework.get('status') != 'approved':
         verdict = 'К сожалению в работе нашлись ошибки.'
     else:
-        verdict = 'Ревьюеру всё понравилось, можно приступать к следующему уроку.'
+        verdict = 'Ревьюеру всё понравилось, \
+             можно приступать к следующему уроку.'
     return f'У вас проверили работу "{homework_name}"!\n\n{verdict}'
 
 
@@ -26,8 +28,14 @@ def get_homework_statuses(current_timestamp):
     url = 'https://praktikum.yandex.ru/api/user_api/homework_statuses/'
     headers = {'Authorization': f'OAuth {PRAKTIKUM_TOKEN}'}
     data = {'from_date': current_timestamp}
-    homework_statuses = requests.get(url, params=data, headers=headers)
-    return homework_statuses.json()
+    try:
+        homework_statuses = requests.get(url, params=data, headers=headers)
+        return homework_statuses.json()
+    except requests.exceptions.RequestException as e:
+        logging.exception(f'Обнаружена ошибка подключения. Error: {e}')
+    except ValueError as e:
+        logging.exception(f'Обнаружена ошибка значения. Error: {e}')
+    return {}
 
 
 def send_message(message, bot_client):
