@@ -19,6 +19,7 @@ logging.basicConfig(
     format='%(asctime)s, %(levelname)s, %(name)s, %(message)s'
 )
 
+
 def parse_homework_status(homework):
     homework_name = homework.get('homework_name')
     if homework.get('status') == 'reviewing':
