@@ -21,13 +21,11 @@ logging.basicConfig(
 
 
 def parse_homework_status(homework):
-    
     verdicts = {
         'rejected': 'К сожалению в работе нашлись ошибки.',
         'approved': 'Ревьюеру всё понравилось, можно приступать ' \
                   'к следующему уроку.'
     }
-
     try:
         homework_name = homework.get('homework_name')
         current_verdict = verdicts[homework.get('status')]
